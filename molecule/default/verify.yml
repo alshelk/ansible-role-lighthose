@@ -1,0 +1,51 @@
+---
+- name: Preparation verify vector centos
+  hosts: centos7
+  gather_facts: false
+  tasks:
+    - name: install curl
+      become: true
+      yum:
+        name: curl
+        state: present
+- name: Preparation verify vector centos
+  hosts: centos8
+  gather_facts: false
+  tasks:
+#    - name: prepare repo
+#      shell: sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+    - name: install curl
+      become: true
+      yum:
+        name: curl
+        state: present
+- name: Preparation verify vector ubuntu
+  hosts: deb
+  gather_facts: false
+  tasks:
+    - name: install curl
+      become: true
+      apt:
+        name: curl
+        state: present
+- name: Verify lighthouse
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Show facts available on the system
+      ansible.builtin.debug:
+        var: ansible_facts.distribution
+    - name: validate config nginx
+      shell: nginx -t
+      register: chk_ngx
+      changed_when: false
+    - name: get title from site
+      shell: curl 'http://localhost' -so - | grep -iPo '(?<=<title>)(.*)(?=</title>)'
+      register: chk_lghths
+      changed_when: false
+    - name: check lighthouse
+      assert:
+        that:
+           - "'syntax is ok' in chk_ngx.stderr"
+           - "'test is successful' in chk_ngx.stderr"
+           - "'LightHouse' in chk_lghths.stdout"

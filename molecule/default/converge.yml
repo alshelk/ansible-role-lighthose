@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include nginx-role"
+      include_role:
+        name: "nginx"
+      vars:
+        ngx_repl_config: "false"
+    - name: "Include lighthouse-role"
+      include_role:
+        name: "lighthouse-role"
