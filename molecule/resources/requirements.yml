@@ -12,6 +12,6 @@
 #  scm: git
 #  version: "1.0.0"
 - name: nginx
-  src: git@github.com:alshelk/ansible-role-nginx.git
+  src: https://github.com/alshelk/ansible-role-nginx.git
   scm: git
   version: "1.1.0"
